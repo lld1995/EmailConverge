@@ -1,0 +1,215 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+        x:Class="EmailConverge.MainWindow"
+        Title="邮件智能总结助手" Width="1200" Height="800"
+        MinWidth="900" MinHeight="600"
+        Background="#F0F2F5">
+
+    <Window.Styles>
+        <Style Selector="Button.primary">
+            <Setter Property="Background" Value="#1890FF"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="16,10"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+        </Style>
+        <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#40A9FF"/>
+        </Style>
+        <Style Selector="Button.secondary">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#333"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="16,10"/>
+            <Setter Property="BorderBrush" Value="#D9D9D9"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+        <Style Selector="Button.secondary:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#FAFAFA"/>
+            <Setter Property="BorderBrush" Value="#1890FF"/>
+        </Style>
+        <Style Selector="Button.icon">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="CornerRadius" Value="4"/>
+        </Style>
+        <Style Selector="Button.icon:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#E6F7FF"/>
+        </Style>
+        <Style Selector="TextBox">
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="BorderBrush" Value="#D9D9D9"/>
+        </Style>
+        <Style Selector="TextBox:focus">
+            <Setter Property="BorderBrush" Value="#1890FF"/>
+        </Style>
+        <Style Selector="ComboBox">
+            <Setter Property="CornerRadius" Value="6"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="280"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="400"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- 左侧面板 - 文件管理 -->
+        <Border Grid.Column="0" Background="White" Margin="12" CornerRadius="12"
+                BoxShadow="0 2 8 0 #1A000000">
+            <Grid RowDefinitions="Auto,*,Auto">
+                <!-- 标题栏 -->
+                <Border Grid.Row="0" Padding="16" BorderBrush="#F0F0F0" BorderThickness="0,0,0,1">
+                    <StackPanel>
+                        <TextBlock Text="📧 邮件文件" FontSize="16" FontWeight="Bold" Foreground="#262626"/>
+                        <TextBlock x:Name="FileCountText" Text="未选择文件" FontSize="12" Foreground="#8C8C8C" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 文件列表 -->
+                <ScrollViewer Grid.Row="1">
+                    <ItemsControl x:Name="FileListControl">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#FAFAFA" CornerRadius="6" Padding="12,10" Margin="4">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Text="{Binding}" FontSize="12" Foreground="#595959" 
+                                                   TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <!-- 底部按钮 -->
+                <StackPanel Grid.Row="2" Spacing="8" Margin="12">
+                    <Button x:Name="SelectFilesButton" Content="➕ 选择邮件文件" 
+                            Click="SelectFilesButton_Click" Classes="primary" HorizontalAlignment="Stretch"/>
+                    <Button x:Name="ClearButton" Content="🗑️ 清空列表" 
+                            Click="ClearButton_Click" Classes="secondary" HorizontalAlignment="Stretch"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- 中间面板 - 邮件内容 -->
+        <Border Grid.Column="1" Background="White" Margin="0,12" CornerRadius="12"
+                BoxShadow="0 2 8 0 #1A000000">
+            <Grid RowDefinitions="Auto,*">
+                <!-- 标题栏 -->
+                <Border Grid.Row="0" Padding="16" BorderBrush="#F0F0F0" BorderThickness="0,0,0,1">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel>
+                            <TextBlock Text="📄 邮件内容" FontSize="16" FontWeight="Bold" Foreground="#262626"/>
+                            <TextBlock Text="解析后的邮件文本内容" FontSize="12" Foreground="#8C8C8C" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- 内容区域 -->
+                <Border Grid.Row="1" Margin="12" Background="#FAFAFA" CornerRadius="8" Padding="8">
+                    <ScrollViewer>
+                        <TextBox x:Name="ResultTextBox" 
+                                 IsReadOnly="True" 
+                                 AcceptsReturn="True"
+                                 TextWrapping="Wrap"
+                                 FontFamily="Consolas, Microsoft YaHei"
+                                 FontSize="13"
+                                 Padding="12"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 Watermark="选择邮件文件后，解析结果将显示在这里..."/>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- 右侧面板 - AI总结 -->
+        <Border Grid.Column="2" Background="White" Margin="12" CornerRadius="12"
+                BoxShadow="0 2 8 0 #1A000000">
+            <Grid RowDefinitions="Auto,Auto,*,Auto">
+                <!-- 标题栏 -->
+                <Border Grid.Row="0" Padding="16" BorderBrush="#F0F0F0" BorderThickness="0,0,0,1">
+                    <StackPanel>
+                        <TextBlock Text="🤖 AI 智能总结" FontSize="16" FontWeight="Bold" Foreground="#262626"/>
+                        <TextBlock Text="使用AI模型分析邮件内容" FontSize="12" Foreground="#8C8C8C" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 模板选择和配置 -->
+                <Border Grid.Row="1" Padding="16,12" BorderBrush="#F0F0F0" BorderThickness="0,0,0,1">
+                    <StackPanel Spacing="12">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Text="总结模板" VerticalAlignment="Center" Foreground="#595959" FontSize="13"/>
+                            <ComboBox x:Name="TemplateComboBox" Grid.Column="1" Margin="12,0,0,0" 
+                                      HorizontalAlignment="Stretch" FontSize="13"/>
+                        </Grid>
+                        <Button x:Name="ConfigButton" Content="⚙️ 模型配置" 
+                                Click="ConfigButton_Click" Classes="icon" HorizontalAlignment="Left"
+                                Foreground="#1890FF" FontSize="13"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 配置面板 -->
+                <Border x:Name="ConfigPanel" Grid.Row="2" IsVisible="False" Padding="16" Background="#FAFAFA">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="AI 模型配置" FontWeight="SemiBold" FontSize="14" Foreground="#262626"/>
+                        
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="API 地址" FontSize="12" Foreground="#8C8C8C"/>
+                            <TextBox x:Name="EndpointTextBox" Watermark="http://localhost:11434/v1" Padding="10,8"/>
+                        </StackPanel>
+                        
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="API Key" FontSize="12" Foreground="#8C8C8C"/>
+                            <TextBox x:Name="ApiKeyTextBox" Watermark="输入API密钥" Padding="10,8"/>
+                        </StackPanel>
+                        
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="模型名称" FontSize="12" Foreground="#8C8C8C"/>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <ComboBox x:Name="ModelComboBox" IsEditable="True" Padding="10,8" HorizontalAlignment="Stretch"/>
+                                <Button Grid.Column="1" x:Name="LoadModelsButton" Content="🔄" 
+                                        Click="LoadModelsButton_Click" Classes="icon" Margin="4,0,0,0"
+                                        ToolTip.Tip="加载模型列表" FontSize="16"/>
+                            </Grid>
+                        </StackPanel>
+                        
+                        <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,0">
+                            <Button Content="保存" Click="SaveConfigButton_Click" Classes="primary" Padding="20,8"/>
+                            <Button Content="取消" Click="CancelConfigButton_Click" Classes="secondary" Padding="20,8"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- AI总结结果 -->
+                <Border Grid.Row="2" Margin="12" Background="#FAFAFA" CornerRadius="8" Padding="8"
+                        IsVisible="{Binding !IsVisible, ElementName=ConfigPanel}">
+                    <ScrollViewer>
+                        <TextBox x:Name="AiSummaryTextBox" 
+                                 IsReadOnly="True" 
+                                 AcceptsReturn="True"
+                                 TextWrapping="Wrap"
+                                 FontFamily="Microsoft YaHei"
+                                 FontSize="13"
+                                 Padding="12"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 Watermark="点击下方按钮开始AI总结..."/>
+                    </ScrollViewer>
+                </Border>
+
+                <!-- 底部按钮 -->
+                <Border Grid.Row="3" Padding="16" BorderBrush="#F0F0F0" BorderThickness="0,1,0,0">
+                    <Button x:Name="AiSummaryButton" Content="✨ 开始 AI 总结" 
+                            Click="AiSummaryButton_Click" Classes="primary" 
+                            HorizontalAlignment="Stretch" FontSize="14"/>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
