@@ -14,6 +14,7 @@ namespace EmailConverge.Services
         ActionItems,
         Brief,
         Detailed,
+        QuarterlyReview,
         AnnualReview
     }
 
@@ -26,6 +27,7 @@ namespace EmailConverge.Services
             SummaryTemplateType.ActionItems => "行动项提取",
             SummaryTemplateType.Brief => "简要摘要",
             SummaryTemplateType.Detailed => "详细分析",
+            SummaryTemplateType.QuarterlyReview => "季度总结",
             SummaryTemplateType.AnnualReview => "年度总结",
             _ => "关键信息提取"
         };
@@ -133,6 +135,41 @@ namespace EmailConverge.Services
                 详细分析报告：
                 """,
 
+            SummaryTemplateType.QuarterlyReview => $"""
+                以下是一个季度内的日报/周报内容，请基于这些内容生成一份季度总结报告：
+
+                一、季度工作概述
+                   - 本季度的主要工作方向和职责范围
+                   - 整体工作节奏和阶段性重点
+
+                二、核心成果与业绩
+                   - 本季度完成的重点项目/任务
+                   - 取得的关键成果和阶段性突破
+                   - 量化的业绩指标（如有）
+
+                三、工时及占比统计
+                   - 各项目/任务投入的总工时计算
+                   - 不同工作类型的时间占比（如开发、会议、沟通、学习等）
+                   - 本季度主要精力分配情况分析
+
+                四、进度与里程碑
+                   - 按月份梳理关键节点和里程碑
+                   - 已完成、进行中、延期的任务概况
+
+                五、问题与改进
+                   - 本季度遇到的主要困难与解决方法
+                   - 流程或协作上的改进点
+
+                六、下季度计划
+                   - 下一季度的工作重点与目标
+                   - 需要推进或落实的事项
+
+                日报/周报内容：
+                {emailContent}
+
+                请生成结构化的季度总结报告：
+                """,
+
             SummaryTemplateType.AnnualReview => $"""
                 以下是一段时间内的日报/周报内容，请基于这些内容生成一份年度总结报告：
 
@@ -181,6 +218,7 @@ namespace EmailConverge.Services
             SummaryTemplateType.ActionItems,
             SummaryTemplateType.Brief,
             SummaryTemplateType.Detailed,
+            SummaryTemplateType.QuarterlyReview,
             SummaryTemplateType.AnnualReview
         };
     }
